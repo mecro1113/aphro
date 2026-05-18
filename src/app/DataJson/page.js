@@ -1,5 +1,7 @@
 "use client";
 import { useState, useRef } from "react";
+import rawStudents from "@/utils/data.json";
+import rawTeachers from "@/utils/teacher.json";
 
 const ITEM_ICONS = {
   Keyboard: (
@@ -39,10 +41,9 @@ const ITEM_ICONS = {
 const ALL_ITEM_NAMES = Object.keys(ITEM_ICONS);
 
 function dicebear(seed) {
-  return `https://api.dicebear.com/9.x/croodles/svg?seed=${encodeURIComponent(seed)}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf`;
+  return `https://api.dicebear.com/9.x/big-smile/svg?seed=${encodeURIComponent(seed)}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf`;
 }
 
-// ── Chip: read-only ──────────────────────────────────────
 function ItemChip({ item }) {
   return (
     <div className="flex items-center gap-1.5 border border-white/10 px-2 py-1 text-xs text-white/40">
@@ -52,7 +53,6 @@ function ItemChip({ item }) {
   );
 }
 
-// ── Chip: removable (used inside modal) ──────────────────
 function RemovableChip({ item, onRemove }) {
   return (
     <div className="flex items-center gap-1.5 border border-white/10 px-2 py-1 text-xs text-white/40">
@@ -69,59 +69,15 @@ function RemovableChip({ item, onRemove }) {
   );
 }
 
-/* ───────────── DATA ───────────── */
-const rawStudents = [
-  {"id":1,"firstname":"Ананд","image":"https://i.pinimg.com/236x/64/11/9b/64119b15e41f962e266fdc7719d67929.jpg","lastname":"Амарзаяа","job":"developer","alive":true,"age":17,"email":"anand.amarzayaa@gmail.com","items":[{"id":10,"name":"Keyboard","image":"https://m.media-amazon.com/images/I/71+p3Hx03dL._AC_UF894,1000_QL80_.jpg"},{"id":11,"name":"Mouse","image":"https://cdn.sandberg.world/products/images/lg/640-27_lg.jpg"}],"height":185,"password":"Ананд123"},
-  {"id":2,"firstname":"Ананд","image":"https://i.pinimg.com/236x/2f/ec/a4/2feca4c9330929232091f910dbff7f87.jpg","lastname":"Бамбацогт","job":"junior","alive":true,"age":17,"email":"anand.bambatsogt@gmail.com","items":[{"id":12,"name":"Monitor","image":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQbFSI1RVx0O4g9zoZE3tlK-FWHs9kGaIhUHA&s"},{"id":13,"name":"Airpods","image":"https://cdnp.cody.mn/spree/images/1201001/large/1.jpg"}],"height":180,"password":"Ананд123"},
-  {"id":3,"firstname":"Анхзаяа","image":"https://api.dicebear.com/9.x/croodles/svg?seed=Анхзаяа","lastname":"Пурэвсурэн","job":"designer","alive":true,"age":17,"email":"ankhzayaa.purevsuren@gmail.com","items":[{"id":14,"name":"Keyboard","image":"https://m.media-amazon.com/images/I/71+p3Hx03dL._AC_UF894,1000_QL80_.jpg"},{"id":15,"name":"Mouse","image":"https://cdn.sandberg.world/products/images/lg/640-27_lg.jpg"}],"height":165,"password":"Анхзаяа123"},
-  {"id":4,"firstname":"Арвидах","image":"https://api.dicebear.com/9.x/croodles/svg?seed=Арвидах","lastname":"Пурэвдорж","job":"developer","alive":true,"age":17,"email":"arvidakh.purevdorj@gmail.com","items":[{"id":16,"name":"Monitor","image":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQbFSI1RVx0O4g9zoZE3tlK-FWHs9kGaIhUHA&s"},{"id":17,"name":"Headphones","image":"https://resource.logitech.com/w_386,ar_1.0,c_limit,f_auto,q_auto,dpr_2.0/d_transparent.gif/content/dam/logitech/en/products/headsets/zone-wired-2/gallery/b2b-zone-wired2-business-headset-white-gallery1.png?v=1"}],"height":175,"password":"Арвидах123"},
-  {"id":5,"firstname":"Ариунбаяр","items":[{"id":18,"name":"Keyboard","image":"https://m.media-amazon.com/images/I/71+p3Hx03dL._AC_UF894,1000_QL80_.jpg"},{"id":19,"name":"Mouse","image":"https://cdn.sandberg.world/products/images/lg/640-27_lg.jpg"}]},
-  {"id":6,"firstname":"Батбилэг","items":[{"id":20,"name":"Monitor","image":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQbFSI1RVx0O4g9zoZE3tlK-FWHs9kGaIhUHA&s"},{"id":21,"name":"Airpods","image":"https://cdnp.cody.mn/spree/images/1201001/large/1.jpg"}]},
-  {"id":7,"firstname":"Золбоо","items":[{"id":22,"name":"Keyboard","image":"https://m.media-amazon.com/images/I/71+p3Hx03dL._AC_UF894,1000_QL80_.jpg"},{"id":23,"name":"Mouse","image":"https://cdn.sandberg.world/products/images/lg/640-27_lg.jpg"}]},
-  {"id":8,"firstname":"Зоригт","items":[{"id":24,"name":"Monitor","image":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQbFSI1RVx0O4g9zoZE3tlK-FWHs9kGaIhUHA&s"},{"id":25,"name":"Headphones","image":"https://resource.logitech.com/w_386,ar_1.0,c_limit,f_auto,q_auto,dpr_2.0/d_transparent.gif/content/dam/logitech/en/products/headsets/zone-wired-2/gallery/b2b-zone-wired2-business-headset-white-gallery1.png?v=1"}]},
-  {"id":9,"firstname":"Маргад","items":[{"id":26,"name":"Keyboard","image":"https://m.media-amazon.com/images/I/71+p3Hx03dL._AC_UF894,1000_QL80_.jpg"},{"id":27,"name":"Mouse","image":"https://cdn.sandberg.world/products/images/lg/640-27_lg.jpg"}]},
-  {"id":10,"firstname":"Мөнхболд","items":[{"id":28,"name":"Monitor","image":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQbFSI1RVx0O4g9zoZE3tlK-FWHs9kGaIhUHA&s"},{"id":29,"name":"Airpods","image":"https://cdnp.cody.mn/spree/images/1201001/large/1.jpg"}]},
-  {"id":11,"firstname":"Мөнхнар","items":[{"id":30,"name":"Keyboard","image":"https://m.media-amazon.com/images/I/71+p3Hx03dL._AC_UF894,1000_QL80_.jpg"},{"id":31,"name":"Mouse","image":"https://cdn.sandberg.world/products/images/lg/640-27_lg.jpg"}]},
-  {"id":12,"firstname":"Мөнхчимэг","items":[{"id":32,"name":"Monitor","image":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQbFSI1RVx0O4g9zoZE3tlK-FWHs9kGaIhUHA&s"},{"id":33,"name":"Headphones","image":"https://resource.logitech.com/w_386,ar_1.0,c_limit,f_auto,q_auto,dpr_2.0/d_transparent.gif/content/dam/logitech/en/products/headsets/zone-wired-2/gallery/b2b-zone-wired2-business-headset-white-gallery1.png?v=1"}]},
-  {"id":13,"firstname":"Няндорж","items":[{"id":34,"name":"Keyboard","image":"https://m.media-amazon.com/images/I/71+p3Hx03dL._AC_UF894,1000_QL80_.jpg"},{"id":35,"name":"Mouse","image":"https://cdn.sandberg.world/products/images/lg/640-27_lg.jpg"}]},
-  {"id":14,"firstname":"Нямрагчаа","items":[{"id":36,"name":"Monitor","image":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQbFSI1RVx0O4g9zoZE3tlK-FWHs9kGaIhUHA&s"},{"id":37,"name":"Airpods","image":"https://cdnp.cody.mn/spree/images/1201001/large/1.jpg"}]},
-  {"id":15,"firstname":"Пурэвбат","items":[{"id":38,"name":"Keyboard","image":"https://m.media-amazon.com/images/I/71+p3Hx03dL._AC_UF894,1000_QL80_.jpg"},{"id":39,"name":"Mouse","image":"https://cdn.sandberg.world/products/images/lg/640-27_lg.jpg"}]},
-  {"id":16,"firstname":"Тэмүүлэн","items":[{"id":40,"name":"Monitor","image":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQbFSI1RVx0O4g9zoZE3tlK-FWHs9kGaIhUHA&s"},{"id":41,"name":"Headphones","image":"https://resource.logitech.com/w_386,ar_1.0,c_limit,f_auto,q_auto,dpr_2.0/d_transparent.gif/content/dam/logitech/en/products/headsets/zone-wired-2/gallery/b2b-zone-wired2-business-headset-white-gallery1.png?v=1"}]},
-  {"id":17,"firstname":"Тэнүүн","items":[{"id":42,"name":"Keyboard","image":"https://m.media-amazon.com/images/I/71+p3Hx03dL._AC_UF894,1000_QL80_.jpg"},{"id":43,"name":"Mouse","image":"https://cdn.sandberg.world/products/images/lg/640-27_lg.jpg"}]},
-  {"id":18,"firstname":"Тэргэл","items":[{"id":44,"name":"Monitor","image":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQbFSI1RVx0O4g9zoZE3tlK-FWHs9kGaIhUHA&s"},{"id":45,"name":"Airpods","image":"https://cdnp.cody.mn/spree/images/1201001/large/1.jpg"}]},
-  {"id":19,"firstname":"Цолмон","items":[{"id":46,"name":"Keyboard","image":"https://m.media-amazon.com/images/I/71+p3Hx03dL._AC_UF894,1000_QL80_.jpg"},{"id":47,"name":"Mouse","image":"https://cdn.sandberg.world/products/images/lg/640-27_lg.jpg"}]},
-  {"id":20,"firstname":"Цэлмүүн","items":[{"id":48,"name":"Monitor","image":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQbFSI1RVx0O4g9zoZE3tlK-FWHs9kGaIhUHA&s"},{"id":49,"name":"Headphones","image":"https://resource.logitech.com/w_386,ar_1.0,c_limit,f_auto,q_auto,dpr_2.0/d_transparent.gif/content/dam/logitech/en/products/headsets/zone-wired-2/gallery/b2b-zone-wired2-business-headset-white-gallery1.png?v=1"}]},
-  {"id":21,"firstname":"Цэлмэг","items":[{"id":50,"name":"Keyboard","image":"https://m.media-amazon.com/images/I/71+p3Hx03dL._AC_UF894,1000_QL80_.jpg"},{"id":51,"name":"Mouse","image":"https://cdn.sandberg.world/products/images/lg/640-27_lg.jpg"}]},
-  {"id":22,"firstname":"Чингүн","items":[{"id":52,"name":"Monitor","image":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQbFSI1RVx0O4g9zoZE3tlK-FWHs9kGaIhUHA&s"},{"id":53,"name":"Airpods","image":"https://cdnp.cody.mn/spree/images/1201001/large/1.jpg"}]},
-  {"id":23,"firstname":"Энхбилэг","items":[{"id":54,"name":"Keyboard","image":"https://m.media-amazon.com/images/I/71+p3Hx03dL._AC_UF894,1000_QL80_.jpg"},{"id":55,"name":"Mouse","image":"https://cdn.sandberg.world/products/images/lg/640-27_lg.jpg"}]},
-  {"id":24,"firstname":"Энхтүшиг","items":[{"id":56,"name":"Monitor","image":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQbFSI1RVx0O4g9zoZE3tlK-FWHs9kGaIhUHA&s"},{"id":57,"name":"Headphones","image":"https://resource.logitech.com/w_386,ar_1.0,c_limit,f_auto,q_auto,dpr_2.0/d_transparent.gif/content/dam/logitech/en/products/headsets/zone-wired-2/gallery/b2b-zone-wired2-business-headset-white-gallery1.png?v=1"}]},
-  {"id":25,"firstname":"Эрхэмбилэг","items":[{"id":58,"name":"Keyboard","image":"https://m.media-amazon.com/images/I/71+p3Hx03dL._AC_UF894,1000_QL80_.jpg"},{"id":59,"name":"Mouse","image":"https://cdn.sandberg.world/products/images/lg/640-27_lg.jpg"}]},
-  {"id":26,"firstname":"Уранхишиг","items":[{"id":60,"name":"Monitor","image":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQbFSI1RVx0O4g9zoZE3tlK-FWHs9kGaIhUHA&s"},{"id":61,"name":"Airpods","image":"https://cdnp.cody.mn/spree/images/1201001/large/1.jpg"}]},
-  {"id":27,"firstname":"Manlaibaatar","items":[{"id":62,"name":"Monitor","image":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQbFSI1RVx0O4g9zoZE3tlK-FWHs9kGaIhUHA&s"},{"id":63,"name":"Airpods","image":"https://cdnp.cody.mn/spree/images/1201001/large/1.jpg"}]}
-];
+const initialStudents = rawStudents.map(p => ({
+  ...p,
+  image: dicebear(p.id === 2 ? `${p.firstname} 2` : p.firstname),
+}));
 
-const rawTeachers = [
-  { "id": 1, "name": "Г. Дөл", "role": "English Teacher & College Counselor", "department": "Department of Social Sciences", "email": "dul@nhs.edu.mn", "image": "https://api.dicebear.com/9.x/croodles/svg?seed=%D0%93.%20%D0%94%D3%A9%D0%BB&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf", "password": "Г. Дөл123" },
-  { "id": 2, "name": "А. Жавзандулам", "role": "Literature Teacher", "department": "Department of Social Sciences", "image": "https://api.dicebear.com/9.x/croodles/svg?seed=%D0%90.%20%D0%96%D0%B0%D0%B2%D0%B7%D0%B0%D0%BD%D0%B4%D1%83%D0%BB%D0%B0%D0%BC&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf", "password": "А. Жавзандулам123" },
-  { "id": 3, "name": "Г. Адьяахүү", "role": "Math Teacher", "department": "Department of Physical Sciences", "image": "https://api.dicebear.com/9.x/croodles/svg?seed=%D0%93.%20%D0%90%D0%B4%D1%8C%D1%8F%D0%B0%D1%85%D2%AF%D2%AF&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf", "password": "Г. Адьяахүү123" },
-  { "id": 4, "name": "Д. Ранцэнхорлоо", "role": "Math Teacher", "department": "Department of Physical Sciences", "image": "https://api.dicebear.com/9.x/croodles/svg?seed=%D0%94.%20%D0%A0%D0%B0%D0%BD%D1%86%D1%8D%D0%BD%D1%85%D0%BE%D1%80%D0%BB%D0%BE%D0%BE&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf", "password": "Д. Ранцэнхорлоо123" },
-  { "id": 5, "name": "Д. Оюунтуяа", "role": "Math Teacher", "department": "Department of Physical Sciences", "image": "https://api.dicebear.com/9.x/croodles/svg?seed=%D0%94.%20%D0%9E%D1%8E%D1%83%D0%BD%D1%82%D1%83%D1%8F%D0%B0&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf", "password": "Д. Оюунтуяа123" },
-  { "id": 6, "name": "М. Батхишиг", "role": "Chemistry Teacher", "department": "Department of Physical Sciences", "image": "https://api.dicebear.com/9.x/croodles/svg?seed=%D0%9C.%20%D0%91%D0%B0%D1%82%D1%85%D0%B8%D1%88%D0%B8%D0%B3&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf", "password": "М. Батхишиг123" },
-  { "id": 7, "name": "С. Болдбаатар", "role": "Physics Teacher", "department": "Department of Physical Sciences", "image": "https://api.dicebear.com/9.x/croodles/svg?seed=%D0%A1.%20%D0%91%D0%BE%D0%BB%D0%B4%D0%B1%D0%B0%D0%B0%D1%82%D0%B0%D1%80&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf", "password": "С. Болдбаатар123" },
-  { "id": 8, "name": "Лавениа", "role": "English Teacher", "department": "Department of Social Sciences", "image": "https://api.dicebear.com/9.x/croodles/svg?seed=%D0%9B%D0%B0%D0%B2%D0%B5%D0%BD%D0%B8%D0%B0&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf", "password": "Лавениа123" },
-  { "id": 9, "name": "Д. Мөнхбаатар", "role": "English Teacher", "department": "Department of Social Sciences", "image": "https://api.dicebear.com/9.x/croodles/svg?seed=%D0%94.%20%D0%9C%D3%A9%D0%BD%D1%85%D0%B1%D0%B0%D0%B0%D1%82%D0%B0%D1%80&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf", "password": "Д. Мөнхбаатар123" },
-  { "id": 10, "name": "Т. Лхагважаргал", "role": "English Teacher", "department": "Department of Social Sciences", "image": "https://api.dicebear.com/9.x/croodles/svg?seed=%D0%A2.%20%D0%9B%D1%85%D0%B0%D0%B3%D0%B2%D0%B0%D0%B6%D0%B0%D1%80%D0%B3%D0%B0%D0%BB&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf", "password": "Т. Лхагважаргал123" },
-  { "id": 11, "name": "Т. Чанцалням", "role": "Sociology Teacher", "department": "Department of Social Sciences", "image": "https://api.dicebear.com/9.x/croodles/svg?seed=%D0%A2.%20%D0%A7%D0%B0%D0%BD%D1%86%D0%B0%D0%BB%D0%BD%D1%8F%D0%BC&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf", "password": "Т. Чанцалням123" },
-  { "id": 12, "name": "О. Өсөхбаатар", "role": "IT Teacher", "department": "IT Department", "image": "https://api.dicebear.com/9.x/croodles/svg?seed=%D0%9E.%20%D3%A8%D1%81%D3%A9%D1%85%D0%B1%D0%B0%D0%B0%D1%82%D0%B0%D1%80&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf", "password": "О. Өсөхбаатар123" },
-  { "id": 13, "name": "Б. Бархасболд", "role": "IT Teacher", "department": "IT Department", "image": "https://api.dicebear.com/9.x/croodles/svg?seed=%D0%91.%20%D0%91%D0%B0%D1%80%D1%85%D0%B0%D1%81%D0%B1%D0%BE%D0%BB%D0%B4&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf", "password": "Б. Бархасболд123" },
-  { "id": 14, "name": "С. Тэмүүжин", "role": "IT Developer", "department": "IT Department", "image": "https://api.dicebear.com/9.x/croodles/svg?seed=%D0%A1.%20%D0%A2%D1%8D%D0%BC%D2%AF%D2%AF%D0%B6%D0%B8%D0%BD&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf", "password": "С. Тэмүүжин123" },
-  { "id": 15, "name": "Э. Мөнх-Оргил", "role": "IT Teacher", "department": "IT Department", "image": "https://api.dicebear.com/9.x/croodles/svg?seed=%D0%AD.%20%D0%9C%D3%A9%D0%BD%D1%85-%D0%9E%D1%80%D0%B3%D0%B8%D0%BB&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf", "password": "Э. Мөнх-Оргил123" },
-  { "id": 16, "name": "Б. Оргил", "role": "IT Developer", "department": "IT Department", "image": "https://api.dicebear.com/9.x/croodles/svg?seed=%D0%91.%20%D0%9E%D1%80%D0%B3%D0%B8%D0%BB&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf", "password": "Б. Оргил123" },
-  { "id": 17, "name": "Н. Зөнбилэг", "role": "IT Developer", "department": "IT Department", "image": "https://api.dicebear.com/9.x/croodles/svg?seed=%D0%9D.%20%D0%97%D3%A9%D0%BD%D0%B1%D0%B8%D0%BB%D1%8D%D0%B3&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf", "password": "Н. Зөнбилэг123" }
-];
-
-const initialStudents = rawStudents.map(p => ({ ...p, image: dicebear(p.firstname) }));
-const initialTeachers = rawTeachers.map(t => ({ ...t, image: dicebear(t.name) }));
+const initialTeachers = rawTeachers.map(t => ({
+  ...t,
+  image: dicebear(t.name),
+}));
 
 /* ───────────── PAGE ───────────── */
 export default function Page() {
@@ -129,18 +85,15 @@ export default function Page() {
   const [teachers, setTeachers] = useState(initialTeachers);
   const [activeTab, setActiveTab] = useState("students");
 
-  // Modal state
-  const [modal, setModal]         = useState(null);   // the person being edited
-  const [modalType, setModalType] = useState("");      // "student" | "teacher"
-  const [draftItems, setDraftItems] = useState([]);   // editable copy of items
+  const [modal, setModal]           = useState(null);
+  const [modalType, setModalType]   = useState("");
+  const [draftItems, setDraftItems] = useState([]);
 
   const nextId = useRef(500);
 
-  // ── Open modal ─────────────────────────────────────────
   function openModal(person, type) {
     setModal(person);
     setModalType(type);
-    // Deep-copy so edits don't mutate until Save
     setDraftItems(person.items ? person.items.map(i => ({ ...i })) : []);
   }
 
@@ -149,7 +102,6 @@ export default function Page() {
     setDraftItems([]);
   }
 
-  // ── Draft item helpers (teacher modal only) ────────────
   function addDraftItem(name) {
     setDraftItems(prev => [...prev, { id: nextId.current++, name }]);
   }
@@ -158,18 +110,15 @@ export default function Page() {
     setDraftItems(prev => prev.filter(i => i.id !== id));
   }
 
-  // ── Save ───────────────────────────────────────────────
   function saveModal() {
     if (modalType === "teacher") {
       setTeachers(prev =>
         prev.map(t => t.id === modal.id ? { ...t, items: draftItems } : t)
       );
     }
-    // (Student editing not wired in this version — extend similarly if needed)
     closeModal();
   }
 
-  // Items already assigned (to disable picker buttons for duplicates)
   const assignedNames = new Set(draftItems.map(i => i.name));
 
   return (
@@ -182,7 +131,9 @@ export default function Page() {
             key={tab}
             onClick={() => setActiveTab(tab)}
             className={`text-xs uppercase tracking-widest transition-colors ${
-              activeTab === tab ? "text-white border-b border-white pb-3 -mb-3" : "text-white/30 hover:text-white/60"
+              activeTab === tab
+                ? "text-white border-b border-white pb-3 -mb-3"
+                : "text-white/30 hover:text-white/60"
             }`}
           >
             {tab}
@@ -194,10 +145,26 @@ export default function Page() {
       {activeTab === "students" && (
         <div className="grid md:grid-cols-3 gap-4">
           {students.map(s => (
-            <div key={s.id} className="border border-white/10 p-4 hover:border-white/25 transition-colors">
-              <h2 className="text-sm mb-1">{s.firstname} {s.lastname}</h2>
+            <div
+              key={s.id}
+              className="border border-white/10 p-4 hover:border-white/25 transition-colors cursor-pointer"
+              onClick={() => openModal(s, "student")}
+            >
+              <div className="flex items-center gap-3 mb-3">
+                <img
+                  src={s.image}
+                  alt={s.firstname}
+                  className="w-10 h-10 rounded-full bg-white/5"
+                />
+                <div>
+                  <h2 className="text-sm">{s.firstname} {s.lastname ?? ""}</h2>
+                  {s.job && (
+                    <p className="text-xs text-white/30">{s.job}</p>
+                  )}
+                </div>
+              </div>
               {s.items?.length > 0 && (
-                <div className="flex flex-wrap gap-2 mt-2">
+                <div className="flex flex-wrap gap-2">
                   {s.items.map(i => <ItemChip key={i.id} item={i} />)}
                 </div>
               )}
@@ -211,8 +178,17 @@ export default function Page() {
         <div className="grid md:grid-cols-3 gap-4">
           {teachers.map(t => (
             <div key={t.id} className="border border-white/10 p-4 hover:border-white/25 transition-colors">
-              <h2 className="text-sm mb-0.5">{t.name}</h2>
-              <p className="text-xs text-white/30 mb-3">{t.role}</p>
+              <div className="flex items-center gap-3 mb-3">
+                <img
+                  src={t.image}
+                  alt={t.name}
+                  className="w-10 h-10 rounded-full bg-white/5"
+                />
+                <div>
+                  <h2 className="text-sm">{t.name}</h2>
+                  <p className="text-xs text-white/30">{t.role}</p>
+                </div>
+              </div>
 
               {t.items?.length > 0 ? (
                 <div className="flex flex-wrap gap-2 mb-3">
@@ -238,15 +214,29 @@ export default function Page() {
         <div className="fixed inset-0 bg-black/85 flex items-center justify-center z-50">
           <div className="bg-[#0a0a0a] border border-white/15 p-6 w-96 max-h-[80vh] overflow-y-auto">
 
-            {/* Header */}
-            <h2 className="text-sm mb-0.5">
-              {modalType === "student" ? `${modal.firstname} ${modal.lastname}` : modal.name}
-            </h2>
-            {modalType === "teacher" && (
-              <p className="text-xs text-white/30 mb-4">{modal.role}</p>
-            )}
+            {/* Header with avatar */}
+            <div className="flex items-center gap-3 mb-4">
+              <img
+                src={modal.image}
+                alt={modalType === "student" ? modal.firstname : modal.name}
+                className="w-12 h-12 rounded-full bg-white/5"
+              />
+              <div>
+                <h2 className="text-sm">
+                  {modalType === "student"
+                    ? `${modal.firstname} ${modal.lastname ?? ""}`
+                    : modal.name}
+                </h2>
+                {modalType === "teacher" && (
+                  <p className="text-xs text-white/30">{modal.role}</p>
+                )}
+                {modalType === "student" && modal.job && (
+                  <p className="text-xs text-white/30">{modal.job}</p>
+                )}
+              </div>
+            </div>
 
-            {/* ── STUDENT: read-only view ── */}
+            {/* ── STUDENT: read-only ── */}
             {modalType === "student" && modal.items && (
               <div className="mt-3">
                 <p className="text-[10px] uppercase tracking-widest text-white/25 mb-2">Items</p>
@@ -256,10 +246,9 @@ export default function Page() {
               </div>
             )}
 
-            {/* ── TEACHER: editable items ── */}
+            {/* ── TEACHER: editable ── */}
             {modalType === "teacher" && (
               <>
-                {/* Current assigned items */}
                 <div className="mb-4">
                   <p className="text-[10px] uppercase tracking-widest text-white/25 mb-2">Assigned Items</p>
                   {draftItems.length > 0 ? (
@@ -275,7 +264,6 @@ export default function Page() {
 
                 <hr className="border-white/8 my-4" />
 
-                {/* Add item picker */}
                 <div>
                   <p className="text-[10px] uppercase tracking-widest text-white/25 mb-2">Add Item</p>
                   <div className="grid grid-cols-2 gap-2">
