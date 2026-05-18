@@ -1,7 +1,7 @@
 "use client";
 import { useState, useRef } from "react";
-import rawStudents from "@/utils/data.json";
-import rawTeachers from "@/utils/teacher.json";
+import rawStudents from "../../utils/data.json";
+import rawTeachers from "../../utils/teachers.json";
 
 const ITEM_ICONS = {
   Keyboard: (
