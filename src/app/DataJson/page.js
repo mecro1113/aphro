@@ -84,12 +84,28 @@ export default function Page() {
   const [students, setStudents] = useState(initialStudents);
   const [teachers, setTeachers] = useState(initialTeachers);
   const [activeTab, setActiveTab] = useState("students");
+  const [search, setSearch] = useState("");
 
   const [modal, setModal]           = useState(null);
   const [modalType, setModalType]   = useState("");
   const [draftItems, setDraftItems] = useState([]);
 
   const nextId = useRef(500);
+
+  // Filter helpers
+  const query = search.trim().toLowerCase();
+  const filteredStudents = query
+    ? students.filter(s =>
+        `${s.firstname} ${s.lastname ?? ""}`.toLowerCase().includes(query) ||
+        s.job?.toLowerCase().includes(query)
+      )
+    : students;
+  const filteredTeachers = query
+    ? teachers.filter(t =>
+        t.name.toLowerCase().includes(query) ||
+        t.role?.toLowerCase().includes(query)
+      )
+    : teachers;
 
   function openModal(person, type) {
     setModal(person);
@@ -124,89 +140,133 @@ export default function Page() {
   return (
     <main className="min-h-screen bg-black text-white p-10 font-mono">
 
-      {/* ── Tabs ── */}
-      <div className="flex gap-6 mb-10 border-b border-white/10 pb-3">
-        {["students", "teachers"].map(tab => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab)}
-            className={`text-xs uppercase tracking-widest transition-colors ${
-              activeTab === tab
-                ? "text-white border-b border-white pb-3 -mb-3"
-                : "text-white/30 hover:text-white/60"
-            }`}
+      {/* ── Tabs + Search ── */}
+      <div className="flex items-end justify-between gap-4 mb-10 border-b border-white/10 pb-3">
+        <div className="flex gap-6">
+          {["students", "teachers"].map(tab => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={`text-xs uppercase tracking-widest transition-colors ${
+                activeTab === tab
+                  ? "text-white border-b border-white pb-3 -mb-3"
+                  : "text-white/30 hover:text-white/60"
+              }`}
+            >
+              {tab}
+            </button>
+          ))}
+        </div>
+
+        {/* Search bar */}
+        <div className="relative mb-0.5">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-white/25 pointer-events-none"
           >
-            {tab}
-          </button>
-        ))}
+            <circle cx="11" cy="11" r="8"/>
+            <path d="M21 21l-4.35-4.35"/>
+          </svg>
+          <input
+            type="text"
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            placeholder="Search…"
+            className="bg-transparent border border-white/10 text-xs text-white placeholder-white/25 pl-8 pr-3 py-1.5 w-48 focus:outline-none focus:border-white/30 transition-colors"
+          />
+          {search && (
+            <button
+              onClick={() => setSearch("")}
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-white/25 hover:text-white/60 transition-colors text-sm leading-none"
+              aria-label="Clear search"
+            >
+              ×
+            </button>
+          )}
+        </div>
       </div>
 
       {/* ── Students ── */}
       {activeTab === "students" && (
-        <div className="grid md:grid-cols-3 gap-4">
-          {students.map(s => (
-            <div
-              key={s.id}
-              className="border border-white/10 p-4 hover:border-white/25 transition-colors cursor-pointer"
-              onClick={() => openModal(s, "student")}
-            >
-              <div className="flex items-center gap-3 mb-3">
-                <img
-                  src={s.image}
-                  alt={s.firstname}
-                  className="w-10 h-10 rounded-full bg-white/5"
-                />
-                <div>
-                  <h2 className="text-sm">{s.firstname} {s.lastname ?? ""}</h2>
-                  {s.job && (
-                    <p className="text-xs text-white/30">{s.job}</p>
+        <>
+          {filteredStudents.length === 0 ? (
+            <p className="text-xs text-white/20 italic">No students match "{search}"</p>
+          ) : (
+            <div className="grid md:grid-cols-3 gap-4">
+              {filteredStudents.map(s => (
+                <div
+                  key={s.id}
+                  className="border border-white/10 p-4 hover:border-white/25 transition-colors cursor-pointer"
+                  onClick={() => openModal(s, "student")}
+                >
+                  <div className="flex items-center gap-3 mb-3">
+                    <img
+                      src={s.image}
+                      alt={s.firstname}
+                      className="w-10 h-10 rounded-full bg-white/5"
+                    />
+                    <div>
+                      <h2 className="text-sm">{s.firstname} {s.lastname ?? ""}</h2>
+                      {s.job && (
+                        <p className="text-xs text-white/30">{s.job}</p>
+                      )}
+                    </div>
+                  </div>
+                  {s.items?.length > 0 && (
+                    <div className="flex flex-wrap gap-2">
+                      {s.items.map(i => <ItemChip key={i.id} item={i} />)}
+                    </div>
                   )}
                 </div>
-              </div>
-              {s.items?.length > 0 && (
-                <div className="flex flex-wrap gap-2">
-                  {s.items.map(i => <ItemChip key={i.id} item={i} />)}
-                </div>
-              )}
+              ))}
             </div>
-          ))}
-        </div>
+          )}
+        </>
       )}
 
       {/* ── Teachers ── */}
       {activeTab === "teachers" && (
-        <div className="grid md:grid-cols-3 gap-4">
-          {teachers.map(t => (
-            <div key={t.id} className="border border-white/10 p-4 hover:border-white/25 transition-colors">
-              <div className="flex items-center gap-3 mb-3">
-                <img
-                  src={t.image}
-                  alt={t.name}
-                  className="w-10 h-10 rounded-full bg-white/5"
-                />
-                <div>
-                  <h2 className="text-sm">{t.name}</h2>
-                  <p className="text-xs text-white/30">{t.role}</p>
-                </div>
-              </div>
+        <>
+          {filteredTeachers.length === 0 ? (
+            <p className="text-xs text-white/20 italic">No teachers match "{search}"</p>
+          ) : (
+            <div className="grid md:grid-cols-3 gap-4">
+              {filteredTeachers.map(t => (
+                <div key={t.id} className="border border-white/10 p-4 hover:border-white/25 transition-colors">
+                  <div className="flex items-center gap-3 mb-3">
+                    <img
+                      src={t.image}
+                      alt={t.name}
+                      className="w-10 h-10 rounded-full bg-white/5"
+                    />
+                    <div>
+                      <h2 className="text-sm">{t.name}</h2>
+                      <p className="text-xs text-white/30">{t.role}</p>
+                    </div>
+                  </div>
 
-              {t.items?.length > 0 ? (
-                <div className="flex flex-wrap gap-2 mb-3">
-                  {t.items.map(i => <ItemChip key={i.id} item={i} />)}
-                </div>
-              ) : (
-                <p className="text-xs text-white/20 italic mb-3">No items</p>
-              )}
+                  {t.items?.length > 0 ? (
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      {t.items.map(i => <ItemChip key={i.id} item={i} />)}
+                    </div>
+                  ) : (
+                    <p className="text-xs text-white/20 italic mb-3">No items</p>
+                  )}
 
-              <button
-                onClick={() => openModal(t, "teacher")}
-                className="text-xs uppercase tracking-widest border border-white/15 px-3 py-1.5 text-white/40 hover:text-white hover:border-white/50 transition-all"
-              >
-                Edit Items
-              </button>
+                  <button
+                    onClick={() => openModal(t, "teacher")}
+                    className="text-xs uppercase tracking-widest border border-white/15 px-3 py-1.5 text-white/40 hover:text-white hover:border-white/50 transition-all"
+                  >
+                    Edit Items
+                  </button>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
+          )}
+        </>
       )}
 
       {/* ── Modal ── */}
@@ -214,7 +274,6 @@ export default function Page() {
         <div className="fixed inset-0 bg-black/85 flex items-center justify-center z-50">
           <div className="bg-[#0a0a0a] border border-white/15 p-6 w-96 max-h-[80vh] overflow-y-auto">
 
-            {/* Header with avatar */}
             <div className="flex items-center gap-3 mb-4">
               <img
                 src={modal.image}
@@ -236,7 +295,6 @@ export default function Page() {
               </div>
             </div>
 
-            {/* ── STUDENT: read-only ── */}
             {modalType === "student" && modal.items && (
               <div className="mt-3">
                 <p className="text-[10px] uppercase tracking-widest text-white/25 mb-2">Items</p>
@@ -246,7 +304,6 @@ export default function Page() {
               </div>
             )}
 
-            {/* ── TEACHER: editable ── */}
             {modalType === "teacher" && (
               <>
                 <div className="mb-4">
@@ -287,7 +344,6 @@ export default function Page() {
               </>
             )}
 
-            {/* Actions */}
             <div className="flex justify-end gap-2 mt-6">
               <button
                 onClick={closeModal}
@@ -306,7 +362,6 @@ export default function Page() {
             </div>
 
           </div>
-
         </div>
       )}
 
